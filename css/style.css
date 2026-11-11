@@ -1,0 +1,250 @@
+/* Készlet – stíluslap. Világos és sötét téma a rendszer beállítása szerint. */
+
+:root {
+  --hatter: #f6f7f5;
+  --felulet: #ffffff;
+  --szoveg: #1d2421;
+  --halvany: #66706b;
+  --vonal: #dfe3e0;
+  --fo: #1f6f5c;
+  --fo-szoveg: #ffffff;
+  --fogyo: #b5481f;
+  --fogyo-hatter: #fbeee8;
+  --veszely: #b3261e;
+  --piros: #d32f2f;
+  --sugar: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hatter: #141816;
+    --felulet: #1d2320;
+    --szoveg: #e6ebe8;
+    --halvany: #98a29d;
+    --vonal: #2e3632;
+    --fo: #3fa58a;
+    --fo-szoveg: #0e1412;
+    --fogyo: #f08a5d;
+    --fogyo-hatter: #3a241b;
+    --veszely: #f2827a;
+    --piros: #ff5a52;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--hatter);
+  color: var(--szoveg);
+  max-width: 720px;
+  margin-inline: auto;
+  padding: 0 16px calc(90px + env(safe-area-inset-bottom));
+}
+
+/* ---- Fejléc ---- */
+.fejlec {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 8px;
+}
+.fejlec h1 { margin: 0; font-size: 1.5rem; color: var(--fo); }
+.pwa-jel { color: var(--piros); font-weight: 800; margin-left: 4px; }
+
+/* ---- Kereső ---- */
+.eszkozsor { display: flex; gap: 12px; align-items: center; }
+.eszkozsor input[type=search] { flex: 1; }
+.jelolo { white-space: nowrap; color: var(--halvany); font-size: .95rem; }
+
+input {
+  font: inherit;
+  color: inherit;
+  background: var(--felulet);
+  border: 1px solid var(--vonal);
+  border-radius: var(--sugar);
+  padding: 10px 12px;
+  width: 100%;
+}
+.jelolo input { width: auto; }
+input:focus { outline: 2px solid var(--fo); outline-offset: -1px; }
+
+.osszesito { color: var(--halvany); font-size: .9rem; margin: 12px 0 6px; min-height: 1em; }
+.ures { color: var(--halvany); text-align: center; margin-top: 48px; }
+
+/* ---- Lista ---- */
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+
+.sor {
+  min-width: 0;   /* rácsban enélkül a hosszú név kitolná a sort */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--felulet);
+  border: 1px solid var(--vonal);
+  border-radius: var(--sugar);
+  padding: 8px 10px;
+}
+.sor-fogyo { border-color: var(--fogyo); background: var(--fogyo-hatter); }
+
+.sor-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.sor-nev { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sor-hely { display: block; font-size: .85rem; color: var(--halvany); }
+.sor-fogyo .sor-hely { color: var(--fogyo); }
+
+.sor-mennyiseg {
+  min-width: 64px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.kerek {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--vonal);
+  background: var(--hatter);
+  color: var(--szoveg);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.kerek:active { background: var(--vonal); }
+
+/* ---- Gombok ---- */
+.gomb {
+  font: inherit;
+  border: 1px solid var(--vonal);
+  background: var(--felulet);
+  color: var(--szoveg);
+  border-radius: var(--sugar);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.gomb-fo { background: var(--fo); color: var(--fo-szoveg); border-color: var(--fo); font-weight: 600; }
+.gomb-veszely { color: var(--veszely); border-color: var(--veszely); }
+.gomb-kicsi { padding: 6px 10px; font-size: .9rem; }
+
+/* ---- Alsó gombsor ---- */
+.lablec {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: var(--hatter);
+  border-top: 1px solid var(--vonal);
+}
+.lablec .gomb-fo { flex: 1; max-width: 240px; }
+.verzio { text-align: center; color: var(--halvany); font-size: .75rem; margin-top: 24px; }
+
+/* ---- Szerkesztő ablak ---- */
+dialog {
+  border: 0;
+  border-radius: 14px;
+  padding: 20px;
+  width: min(440px, calc(100vw - 32px));
+  background: var(--felulet);
+  color: var(--szoveg);
+}
+dialog::backdrop { background: rgb(0 0 0 / .45); }
+dialog h2 { margin: 0 0 12px; font-size: 1.2rem; }
+dialog label { display: block; font-size: .9rem; color: var(--halvany); margin-bottom: 12px; }
+dialog label input { margin-top: 4px; color: var(--szoveg); }
+.ket-oszlop { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.urlap-gombok { display: flex; gap: 8px; margin-top: 8px; }
+.tolto { flex: 1; }
+
+/* ---- Kivét ---- */
+.sor-kivet { display: block; font-size: .8rem; color: var(--halvany); }
+.sor-kivet:empty { display: none; }
+.kivet-gomb { flex-shrink: 0; }
+.kivet-gomb:disabled { opacity: .4; cursor: default; }
+.kivet-tetel { margin: 0 0 12px; font-weight: 600; }
+
+.kivet-tortenet { margin: 4px 0 12px; }
+.kivet-tortenet h3 { margin: 0 0 6px; font-size: .9rem; color: var(--halvany); font-weight: 600; }
+.kivet-tortenet ul {
+  list-style: none; margin: 0; padding: 0;
+  max-height: 150px; overflow-y: auto;
+  border: 1px solid var(--vonal); border-radius: var(--sugar);
+}
+.kivet-tortenet li {
+  display: flex; justify-content: space-between;
+  padding: 6px 10px; font-size: .9rem;
+  font-variant-numeric: tabular-nums;
+}
+.kivet-tortenet li + li { border-top: 1px solid var(--vonal); }
+
+/* Keskeny kijelzőn kisebb gombok, hogy kiférjen a sor */
+@media (max-width: 420px) {
+  .sor { gap: 6px; padding: 8px; }
+  .kerek { width: 34px; height: 34px; }
+  .sor-mennyiseg { min-width: 52px; }
+}
+
+/* ---- Üzenetsáv ---- */
+.uzenet {
+  position: fixed;
+  left: 50%;
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  background: var(--szoveg);
+  color: var(--hatter);
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: .95rem;
+  max-width: calc(100vw - 32px);
+}
+
+/* ---- Vonalkód ---- */
+.kod-sor { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+.kod-sor input { margin-top: 0; }
+.kod-sor .gomb { flex-shrink: 0; }
+.talalt-gombok { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.talalt-gombok .gomb { flex: 1 1 auto; }
+.sor-kod { display: block; font-size: .8rem; color: var(--halvany); font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sor-kod:empty { display: none; }
+
+/* A böngészős kódolvasó ablaka (élő kamerakép, középen keret) */
+dialog.kodolvaso {
+  position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; max-height: none;
+  margin: 0; padding: 0; border-radius: 0; background: #000;
+}
+dialog.kodolvaso[open] { display: flex; align-items: center; justify-content: center; }
+.kodolvaso video { width: 100%; height: 100%; object-fit: cover; }
+.kodolvaso-keret {
+  position: absolute; left: 10%; right: 10%; top: 38%; height: 24%;
+  border: 3px solid #fff; border-radius: 12px; box-shadow: 0 0 0 100vmax rgb(0 0 0 / .35);
+}
+.kodolvaso-sugo { position: absolute; top: calc(12px + env(safe-area-inset-top)); left: 0; right: 0; text-align: center; color: #fff; margin: 0; font-weight: 600; }
+.kodolvaso-bezar { position: absolute; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
+
+/* ---- Kódképek és címke ---- */
+.kod-kepek { display: flex; gap: 12px; align-items: center; margin: -4px 0 12px; padding: 8px; background: #fff; border-radius: var(--sugar); border: 1px solid var(--vonal); }
+.kod-kepek > div:empty { display: none; }
+#vonalkodKep { flex: 1; min-width: 0; }
+#vonalkodKep svg { width: 100%; max-height: 90px; display: block; }
+#qrKep svg { width: 96px; height: 96px; display: block; }
+.cimke-kep { width: 100%; border: 1px solid var(--vonal); border-radius: 6px; background: #fff; }
+.cimke-allapot { min-height: 1.2em; font-size: .9rem; color: var(--halvany); margin: 8px 0 0; }
+.nyomtatas { display: none; }
+@media print {
+  body > *:not(.nyomtatas) { display: none !important; }
+  body { padding: 0; max-width: none; background: #fff; }
+  .nyomtatas { display: block; }
+  .nyomtatas img { width: 90mm; }
+}

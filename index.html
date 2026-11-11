@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="generator" content="JT AppKreator 2.7.28">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Készlet</title>
+  <meta name="description" content="Egyszerű készlet-nyilvántartó – JT AppKreator minta">
+  <meta name="theme-color" content="#1f6f5c">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="ikon/ikon-192.png">
+  <link rel="apple-touch-icon" href="ikon/ikon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="fejlec">
+    <!-- A "PWA" jelzés csak a böngészős változatban látszik (app.js kapcsolja) -->
+    <h1>Készlet<span id="pwaJel" class="pwa-jel" hidden>PWA</span></h1>
+    <button id="btnTelepites" class="gomb gomb-kicsi" hidden>Telepítés</button>
+  </header>
+
+  <main>
+    <!-- Kereső és szűrő -->
+    <section class="eszkozsor">
+      <input id="kereso" type="search" placeholder="Keresés (név, hely, kód)…" autocomplete="off">
+      <button id="btnBeolvas" class="gomb gomb-kicsi" title="Vonalkód beolvasása">📷 Kód</button>
+      <label class="jelolo">
+        <input id="csakFogyo" type="checkbox"> csak fogyó
+      </label>
+    </section>
+
+    <!-- Összesítő sor -->
+    <p id="osszesito" class="osszesito"></p>
+
+    <!-- A tételek listája (app.js tölti fel) -->
+    <ul id="lista" class="lista"></ul>
+    <p id="ures" class="ures" hidden>Még nincs tétel. Az „Új tétel” gombbal vehetsz fel.</p>
+  </main>
+
+  <!-- Alsó gombsor -->
+  <footer class="lablec">
+    <button id="btnUj" class="gomb gomb-fo">+ Új tétel</button>
+    <button id="btnMentes" class="gomb">Mentés</button>
+    <button id="btnBetoltes" class="gomb">Betöltés</button>
+    <input id="fajlValaszto" type="file" accept=".json,application/json" hidden>
+  </footer>
+  <p class="verzio">v<span id="verzio"></span></p>
+
+  <!-- Tétel szerkesztő ablak -->
+  <dialog id="szerkeszto">
+    <form id="urlap" method="dialog">
+      <h2 id="urlapCim">Új tétel</h2>
+      <input type="hidden" id="mezoId">
+
+      <label>Megnevezés
+        <input id="mezoNev" required maxlength="80">
+      </label>
+
+      <div class="ket-oszlop">
+        <label>Mennyiség
+          <input id="mezoMennyiseg" type="number" step="any" min="0" value="0" required>
+        </label>
+        <label>Egység
+          <input id="mezoEgyseg" placeholder="db, kg, l…" maxlength="12" value="db">
+        </label>
+      </div>
+
+      <label>Vonalkód
+        <span class="kod-sor">
+          <input id="mezoVonalkod" maxlength="60" inputmode="text" autocomplete="off" placeholder="beolvasás vagy kézzel">
+          <button type="button" id="btnMezoBeolvas" class="gomb gomb-kicsi" title="Vonalkód beolvasása">📷</button>
+        </span>
+      </label>
+
+      <label>QR-kód
+        <span class="kod-sor">
+          <input id="mezoQrkod" maxlength="200" autocomplete="off" placeholder="pl. saját címke, polc">
+          <button type="button" id="btnMezoQrBeolvas" class="gomb gomb-kicsi" title="QR-kód beolvasása">📷</button>
+          <button type="button" id="btnQrUj" class="gomb gomb-kicsi" title="Saját, egyedi QR-kód a tételnek">＋</button>
+        </span>
+      </label>
+
+      <!-- A kódok képe (a beírt vagy beolvasott szövegből rajzolva) -->
+      <div id="kodKepek" class="kod-kepek" hidden>
+        <div id="vonalkodKep"></div>
+        <div id="qrKep"></div>
+      </div>
+
+      <div class="ket-oszlop">
+        <label>Minimum
+          <input id="mezoMinimum" type="number" step="any" min="0" value="0">
+        </label>
+        <label>Hely
+          <input id="mezoHely" placeholder="pl. kamra" maxlength="40">
+        </label>
+      </div>
+
+      <!-- Kivétek listája (csak meglévő tételnél, ha volt kivét) -->
+      <div id="kivetTortenet" class="kivet-tortenet" hidden>
+        <h3>Kivétek</h3>
+        <ul id="kivetLista"></ul>
+      </div>
+
+      <div class="urlap-gombok">
+        <button type="button" id="btnTorles" class="gomb gomb-veszely" hidden>Törlés</button>
+        <button type="button" id="btnCimke" class="gomb" title="Nyomtatható címke a névvel és a kódokkal">🏷️ Címke</button>
+        <span class="tolto"></span>
+        <button type="button" id="btnMegse" class="gomb">Mégse</button>
+        <button type="submit" class="gomb gomb-fo">Mentés</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Kivét ablak -->
+  <dialog id="kivetAblak">
+    <form id="kivetUrlap" method="dialog">
+      <h2>Kivét</h2>
+      <p id="kivetTetel" class="kivet-tetel"></p>
+      <label>Kivett mennyiség
+        <input id="kivetMennyiseg" type="number" step="any" min="0.001" required>
+      </label>
+      <div class="urlap-gombok">
+        <span class="tolto"></span>
+        <button type="button" id="btnKivetMegse" class="gomb">Mégse</button>
+        <button type="submit" class="gomb gomb-fo">Kivét</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Címke: előnézet, nyomtatás / mentés / megosztás -->
+  <dialog id="cimkeAblak">
+    <form method="dialog">
+      <h2>Címke</h2>
+      <img id="cimkeKep" class="cimke-kep" alt="A tétel címkéje">
+      <p id="cimkeAllapot" class="cimke-allapot"></p>
+      <div class="talalt-gombok">
+        <button type="button" id="btnCimkeNyomtat" class="gomb gomb-fo">🖨️ Nyomtatás</button>
+        <button type="button" id="btnCimkeMent" class="gomb">💾 Mentés</button>
+        <button type="button" id="btnCimkeMegoszt" class="gomb">📤 Megosztás</button>
+        <button type="button" id="btnCimkeBezar" class="gomb">Bezár</button>
+      </div>
+    </form>
+  </dialog>
+  <!-- Nyomtatáskor csak ez látszik (a címke képe) -->
+  <div id="nyomtatas" class="nyomtatas" aria-hidden="true"></div>
+
+  <!-- Beolvasott kód: talált tétel -->
+  <dialog id="talaltAblak">
+    <form method="dialog">
+      <h2>Megvan</h2>
+      <p id="talaltTetel" class="kivet-tetel"></p>
+      <div class="talalt-gombok">
+        <button type="button" id="btnTalaltKivet" class="gomb gomb-fo">Kivét</button>
+        <button type="button" id="btnTalaltPlusz" class="gomb">+1</button>
+        <button type="button" id="btnTalaltSzerk" class="gomb">Szerkesztés</button>
+        <button type="button" id="btnTalaltMegse" class="gomb">Bezár</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Rövid üzenetsáv -->
+  <div id="uzenet" class="uzenet" hidden></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/mentes.js"></script>
+  <script src="js/vonalkod.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/kodkep.js"></script>
+  <script src="js/app.js"></script>
+  <p class="jtak-keszult" style="text-align:center;font:12px/1.4 system-ui,sans-serif;opacity:.6;margin:16px 0">Készült a JT AppKreatorral</p>
+  <script src="js/telepites.js"></script>
+</body>
+</html>
